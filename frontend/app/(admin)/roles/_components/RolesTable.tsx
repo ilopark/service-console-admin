@@ -1,4 +1,4 @@
-import type { RoleRow } from "../_lib/roles.mock";
+import type { RoleRow} from "../_lib/roles.types";
 
 export default function RolesTable({
   rows,

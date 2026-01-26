@@ -1,11 +1,4 @@
-export type RoleRow = {
-  id: string;
-  name: string;
-  description: string;
-  type: "system" | "custom";
-  userCount: number;
-  updatedAt: string;
-};
+import type { RoleRow } from "./roles.types";
 
 export const mockRoles: RoleRow[] = [
   {
