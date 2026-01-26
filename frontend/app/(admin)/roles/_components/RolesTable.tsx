@@ -1,9 +1,13 @@
-import type { RoleRow} from "../_lib/roles.types";
+import type { RoleRow } from "../_lib/roles.types";
 
 export default function RolesTable({
   rows,
+  onEdit,
+  onDelete,
 }: {
   rows: RoleRow[];
+  onEdit: (row: RoleRow) => void;
+  onDelete: (id: string) => void;
 }) {
   return (
     <div className="rounded-xl border border-zinc-800 bg-zinc-950/40 overflow-hidden">
@@ -27,7 +31,9 @@ export default function RolesTable({
               >
                 <td className="px-4 py-3">
                   <div className="text-zinc-100 font-medium">{r.name}</div>
-                  <div className="text-xs text-zinc-500">{r.description}</div>
+                  {r.description && (
+                    <div className="text-xs text-zinc-500">{r.description}</div>
+                  )}
                 </td>
 
                 <td className="px-4 py-3">
@@ -48,16 +54,23 @@ export default function RolesTable({
 
                 <td className="px-4 py-3 text-right">
                   <div className="inline-flex gap-2">
-                    <button className="text-xs text-zinc-200 hover:underline">
+                    <button
+                      onClick={() => onEdit(r)}
+                      className="text-xs text-zinc-200 hover:underline"
+                    >
                       Edit
                     </button>
-                    <button className="text-xs text-rose-300 hover:underline">
+                    <button
+                      onClick={() => onDelete(r.id)}
+                      className="text-xs text-rose-300 hover:underline"
+                    >
                       Delete
                     </button>
                   </div>
                 </td>
               </tr>
             ))}
+
             {rows.length === 0 && (
               <tr>
                 <td className="px-4 py-10 text-center text-zinc-500" colSpan={5}>

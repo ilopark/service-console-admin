@@ -12,7 +12,11 @@ export default function RolesPage() {
 
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"all" | RoleType>("all");
-  const [createOpen, setCreateOpen] = useState(false);
+
+  // ✅ 모달 상태: create/edit 구분 + 편집 대상
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<"create" | "edit">("create");
+  const [editingRole, setEditingRole] = useState<RoleRow | null>(null);
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -22,31 +26,77 @@ export default function RolesPage() {
       .filter((r) => (q ? r.name.toLowerCase().includes(q) : true));
   }, [roles, query, filter]);
 
-  const handleCreateRole = (payload: {
+  const openCreate = () => {
+    setModalMode("create");
+    setEditingRole(null);
+    setModalOpen(true);
+  };
+
+  const openEdit = (row: RoleRow) => {
+    setModalMode("edit");
+    setEditingRole(row);
+    setModalOpen(true);
+  };
+
+  const handleSubmit = (payload: {
+    id?: string;
     name: string;
     description?: string;
     type: RoleType;
   }) => {
     const name = payload.name.trim();
 
-    const exists = roles.some((r) => r.name.toLowerCase() === name.toLowerCase());
+    // ✅ 중복 체크 (edit일 땐 자기 자신 제외)
+    const exists = roles.some(
+      (r) =>
+        r.name.toLowerCase() === name.toLowerCase() &&
+        r.id !== payload.id
+    );
     if (exists) {
       alert("Role name already exists");
       return;
     }
 
-    const desc = payload.description?.trim();
-    const newRole: RoleRow = {
-      id: crypto.randomUUID(),
-      name,
-      description: desc ? desc : undefined, // ✅ undefined OK (types에서 optional)
-      type: payload.type,
-      userCount: 0,
-      updatedAt: new Date().toISOString().slice(0, 10),
-    };
+    if (modalMode === "create") {
+      const newRole: RoleRow = {
+        id: crypto.randomUUID(),
+        name,
+        description: payload.description,
+        type: payload.type,
+        userCount: 0,
+        updatedAt: new Date().toISOString().slice(0, 10),
+      };
 
-    setRoles((prev) => [newRole, ...prev]);
-    setCreateOpen(false);
+      setRoles((prev) => [newRole, ...prev]);
+      setModalOpen(false);
+      return;
+    }
+
+    // edit
+    if (!payload.id) return;
+
+    setRoles((prev) =>
+      prev.map((r) =>
+        r.id === payload.id
+          ? {
+              ...r,
+              name,
+              description: payload.description,
+              type: payload.type,
+              updatedAt: new Date().toISOString().slice(0, 10),
+            }
+          : r
+      )
+    );
+    setModalOpen(false);
+  };
+
+  const handleDelete = (id: string) => {
+    const target = roles.find((r) => r.id === id);
+    const ok = window.confirm(`Delete role "${target?.name ?? ""}"?`);
+    if (!ok) return;
+
+    setRoles((prev) => prev.filter((r) => r.id !== id));
   };
 
   return (
@@ -63,15 +113,17 @@ export default function RolesPage() {
         onQueryChange={setQuery}
         filter={filter}
         onFilterChange={setFilter}
-        onCreate={() => setCreateOpen(true)}
+        onCreate={openCreate}
       />
 
-      <RolesTable rows={rows} />
+      <RolesTable rows={rows} onEdit={openEdit} onDelete={handleDelete} />
 
       <RoleCreateModal
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        onSubmit={handleCreateRole}
+        open={modalOpen}
+        mode={modalMode}
+        initial={editingRole}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleSubmit}
       />
     </div>
   );
