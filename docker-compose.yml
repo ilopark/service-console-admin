@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: opshub-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: opshub
+      POSTGRES_USER: opshub
+      POSTGRES_PASSWORD: opshub_password
+    volumes:
+      - opshub_pgdata:/var/lib/postgresql/data
+
+volumes:
+  opshub_pgdata:
