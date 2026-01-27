@@ -12,3 +12,57 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  DISABLED
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  name      String
+  status    UserStatus @default(PENDING)
+
+  roles     UserRole[]
+  auditLogs AuditLog[] @relation("ActorLogs")
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Role {
+  id        String     @id @default(uuid())
+  code      String     @unique // ADMIN, VIEWER 등
+  name      String
+
+  users     UserRole[]
+
+  createdAt DateTime   @default(now())
+}
+
+model UserRole {
+  userId String
+  roleId String
+
+  user   User @relation(fields: [userId], references: [id])
+  role   Role @relation(fields: [roleId], references: [id])
+
+  @@id([userId, roleId])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+
+  action    String   // USER_CREATE, ROLE_ASSIGN 등
+  target    String   // User, Role, Permission
+  targetId  String?
+
+  actorId  String?
+  actor    User?    @relation("ActorLogs", fields: [actorId], references: [id])
+
+  meta      Json?
+
+  createdAt DateTime @default(now())
+}
