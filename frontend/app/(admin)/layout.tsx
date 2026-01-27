@@ -4,6 +4,7 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/users", label: "Users" },
   { href: "/roles", label: "Roles" },
+  { href: "/audit-logs", label: "Log" },
 ];
 
 export default function AdminLayout({
