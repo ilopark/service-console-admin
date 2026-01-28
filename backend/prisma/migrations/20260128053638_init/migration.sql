@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "UserStatus" AS ENUM ('PENDING', 'ACTIVE', 'DISABLED');
 
+-- CreateEnum
+CREATE TYPE "RoleType" AS ENUM ('system', 'custom');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -18,7 +21,10 @@ CREATE TABLE "Role" (
     "id" TEXT NOT NULL,
     "code" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "description" TEXT,
+    "type" "RoleType" NOT NULL DEFAULT 'system',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Role_pkey" PRIMARY KEY ("id")
 );

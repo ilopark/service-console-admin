@@ -31,14 +31,22 @@ model User {
   updatedAt DateTime   @updatedAt
 }
 
+enum RoleType {
+  system
+  custom
+}
+
 model Role {
-  id        String     @id @default(uuid())
-  code      String     @unique // ADMIN, VIEWER 등
-  name      String
+  id          String   @id @default(uuid())
+  code        String   @unique // ADMIN, VIEWER, SUPPORT 등
+  name        String
+  description String?
+  type        RoleType @default(system)
 
-  users     UserRole[]
+  users       UserRole[]
 
-  createdAt DateTime   @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model UserRole {

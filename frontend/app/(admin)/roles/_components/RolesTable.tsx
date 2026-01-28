@@ -16,10 +16,12 @@ export default function RolesTable({
           <thead className="text-xs text-zinc-400">
             <tr className="border-b border-zinc-800">
               <th className="px-4 py-3 text-left font-medium">Role</th>
-              <th className="px-4 py-3 text-left font-medium">Type</th>
-              <th className="px-4 py-3 text-left font-medium">Users</th>
-              <th className="px-4 py-3 text-left font-medium">Updated</th>
-              <th className="px-4 py-3 text-right font-medium">Actions</th>
+
+              <th className="px-4 py-3 text-center font-medium">Type</th>
+              <th className="px-4 py-3 text-center font-medium">Users</th>
+              <th className="px-4 py-3 text-center font-medium">Updated</th>
+
+              <th className="px-4 py-3 text-center font-medium">Actions</th>
             </tr>
           </thead>
 
@@ -36,10 +38,11 @@ export default function RolesTable({
                   )}
                 </td>
 
-                <td className="px-4 py-3">
+                {/* Type: 컬럼 중앙에 뱃지 */}
+                <td className="px-4 py-3 text-center">
                   <span
                     className={[
-                      "rounded-md px-2 py-1 text-xs border",
+                      "inline-flex items-center justify-center rounded-md px-2 py-1 text-xs border",
                       r.type === "system"
                         ? "border-sky-900/60 bg-sky-950/40 text-sky-200"
                         : "border-amber-900/60 bg-amber-950/40 text-amber-200",
@@ -49,11 +52,19 @@ export default function RolesTable({
                   </span>
                 </td>
 
-                <td className="px-4 py-3 text-zinc-200">{r.userCount}</td>
-                <td className="px-4 py-3 text-zinc-400">{r.updatedAt}</td>
+                {/* Users: 숫자 중앙 */}
+                <td className="px-4 py-3 text-center text-zinc-200 tabular-nums">
+                  {r.userCount}
+                </td>
 
-                <td className="px-4 py-3 text-right">
-                  <div className="inline-flex gap-2">
+                {/* Updated: 날짜 중앙 */}
+                <td className="px-4 py-3 text-center text-zinc-400 tabular-nums">
+                  {r.updatedAt}
+                </td>
+
+                {/* Actions: 버튼 묶음 중앙 */}
+                <td className="px-4 py-3 text-center">
+                  <div className="inline-flex items-center justify-center gap-2">
                     <button
                       onClick={() => onEdit(r)}
                       className="text-xs text-zinc-200 hover:underline"
@@ -79,6 +90,7 @@ export default function RolesTable({
               </tr>
             )}
           </tbody>
+
         </table>
       </div>
     </div>
