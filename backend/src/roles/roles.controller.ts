@@ -19,7 +19,6 @@ export class RolesController {
 
   @Patch(":id")
   update(@Param("id") id: string, @Body() dto: UpdateRoleDto) {
-    console.log("[RolesController] PATCH /roles/:id", { id, dto });
     return this.rolesService.update(id, dto);
   }
 
