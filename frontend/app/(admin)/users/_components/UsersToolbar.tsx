@@ -12,6 +12,7 @@ export default function UsersToolbar({
   onRoleChange,
   roles,
   onCreate,
+  createLabel,
 }: {
   query: string;
   onQueryChange: (v: string) => void;
@@ -21,6 +22,7 @@ export default function UsersToolbar({
   onRoleChange: (v: "all" | string) => void;
   roles: RoleRow[];
   onCreate: () => void;
+  createLabel?: string;
 }) {
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -63,7 +65,7 @@ export default function UsersToolbar({
         onClick={onCreate}
         className="rounded-lg bg-zinc-100 px-3 py-2 text-xs font-medium text-zinc-950"
       >
-        Create User
+        {createLabel ?? "Create User"}
       </button>
     </div>
   );

@@ -73,3 +73,23 @@ model AuditLog {
 
   createdAt DateTime @default(now())
 }
+
+
+model InviteToken {
+  id        String   @id @default(uuid())
+
+  // 초대 대상 이메일 (이 단계에서는 User를 만들지 않음)
+  email     String
+
+  // 초대 링크에 포함될 랜덤 토큰
+  token     String   @unique
+
+  // 만료/1회 사용 처리
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([expiresAt])
+}
